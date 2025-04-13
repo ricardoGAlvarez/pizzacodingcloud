@@ -1,0 +1,52 @@
+[
+    {
+        "id": 1,
+        "name": "Card Title",
+        "ingredients": [
+            "Ingredient 1",
+            "Ingredient 2",
+            "Ingredient 3"
+        ],
+        "price": 19.99
+    },
+    {
+        "id": 2,
+        "name": "Card Title",
+        "ingredients": [
+            "Ingredient 1",
+            "Ingredient 2",
+            "Ingredient 3"
+        ],
+        "price": 29.99
+    },
+    {
+        "id": 3,
+        "name": "Card Title",
+        "ingredients": [
+            "Ingredient 1",
+            "Ingredient 2",
+            "Ingredient 3"
+        ],
+        "price": 39.99
+    },
+    {
+        "id": 4,
+        "name": "Card Title",
+        "ingredients": [
+            "Ingredient 1",
+            "Ingredient 2",
+            "Ingredient 3"
+        ],
+        "price": 5.99
+    },
+    {
+        "id": 5,
+        "name": "Card Title",
+        "ingredients": [
+            "Ingredient 1",
+            "Ingredient 2",
+            "Ingredient 3"
+        ],
+        "price": 9.99
+    }
+]

@@ -1,0 +1,58 @@
+"use client"
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { ShoppingCartIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { items } from "../models/item";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+function CardItem() {
+    const [items, setItems] = useState<items[]>([]);
+    useEffect(() => {
+        const response = axios.get("/api/product");
+        response.then((res) => {
+            setItems(res.data);
+        })
+    }, [])
+    const handleAddToCart = (item: items) => {
+        const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
+        const existingItem = cartItems.find((cartItem: any) => cartItem.id === item.id)
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cartItems.push({ ...item, quantity: 1 });
+        }
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
+        toast.success("Item added to cart");
+        setTimeout(() => {
+            window.location.reload();
+        }, 1200);
+    }
+
+    return (
+        <div className="grid md:grid-cols-2 gridcols-1 gap-2">
+            {items.map((item) => (
+                <Card key={item.id} className=" ">
+                    <div className="px-2 ">
+                        <h2 className="text-2xl font-semibold mb-2">{item.name}</h2>
+                        <p className="text-gray-700">{item.ingredients.join(", ")}</p>
+
+                        <div className="flex justify-between p-4 items-center">
+                            <p className="text-gray-900 text-xl font-bold mt-2">${item.price.toFixed(2)}</p>
+                            <Button className="bg-blue-700 flex items-center text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-blue-600 transition duration-200"
+                                onClick={() => handleAddToCart(item)}
+                            >
+                                <ShoppingCartIcon className="w-4 h-4 mr-2" /> Add to Cart
+                            </Button>
+                        </div>
+                    </div>
+
+                </Card>
+            ))}
+        </div>
+    );
+
+}
+
+export default CardItem;
