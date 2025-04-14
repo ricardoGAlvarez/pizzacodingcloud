@@ -1,52 +1,52 @@
 [
-    {
-        "id": 1,
-        "name": "Card Title",
+	
+	{
+        "id":1 ,
+        "name": "Margherita",
+        "price": 5,
         "ingredients": [
-            "Ingredient 1",
-            "Ingredient 2",
-            "Ingredient 3"
-        ],
-        "price": 19.99
-    },
-    {
+          "tomato",
+          "mozzarella"
+        ]
+      },
+      {
         "id": 2,
-        "name": "Card Title",
+        "name": "Bufala",
+        "price": 6,
         "ingredients": [
-            "Ingredient 1",
-            "Ingredient 2",
-            "Ingredient 3"
-        ],
-        "price": 29.99
-    },
-    {
+          "tomato",
+          "mozarella di bufala"
+        ]
+      },
+      {
         "id": 3,
-        "name": "Card Title",
+        "name": "Romana",
+        "price": 5,
         "ingredients": [
-            "Ingredient 1",
-            "Ingredient 2",
-            "Ingredient 3"
-        ],
-        "price": 39.99
-    },
-    {
+          "tomato",
+          "mozzarella",
+          "anchovies",
+          "oregano",
+          "oil"
+        ]
+      },
+      {
         "id": 4,
-        "name": "Card Title",
+        "name": "Diavola",
+        "price": 7.5,
         "ingredients": [
-            "Ingredient 1",
-            "Ingredient 2",
-            "Ingredient 3"
-        ],
-        "price": 5.99
-    },
-    {
+          "tomato",
+          "mozzarella",
+          "spicy salami"
+        ]
+      },
+      {
         "id": 5,
-        "name": "Card Title",
+        "name": "Pizza Bianca",
+        "price": 5,
         "ingredients": [
-            "Ingredient 1",
-            "Ingredient 2",
-            "Ingredient 3"
-        ],
-        "price": 9.99
-    }
+          "mozzarella",
+          "oregano"
+        ]
+      }
 ]
