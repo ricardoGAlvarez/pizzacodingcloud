@@ -3,8 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { orderItem } from "../models/item-order";
-import { orderList } from "../models/order-list";
-import { set } from "zod";
+
 
 interface QuantityMap {
   [id: string]: number;
@@ -97,7 +96,6 @@ function OrderItem() {
       quantity: quantities[item.id] || 1,
       estado: "Pendiente", // Agregamos la propiedad estado a cada item del pedido
     }));
-    // setOrderList(pedido); // Si necesitas actualizar el estado local
     localStorage.setItem("listOrder", JSON.stringify(pedido));
     localStorage.removeItem("cartItems");
     setItemsOrder([]);

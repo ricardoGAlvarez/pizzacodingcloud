@@ -15,10 +15,9 @@ function CardItem() {
   useEffect(() => {
     const response = axios.get("/api/product");
     response.then((res) => {
-      setItems(res.data);
+      setItems(res.data.product);
     });
   }, []);
-
   const handleAddToCart = (item: items) => {
     const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
     const existingItem = cartItems.find(

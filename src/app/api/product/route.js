@@ -1,6 +1,10 @@
-
-import dataProduct from '@/utils/dataProducts.JSON';
-import { NextResponse } from 'next/server';
+import dataProduct from "@/utils/dataProducts.JSON";
+import { NextResponse } from "next/server";
 export async function GET() {
-    return new NextResponse(JSON.stringify(dataProduct), { status: 200 });
+  try {
+    const product = dataProduct;
+    return NextResponse.json({ product }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

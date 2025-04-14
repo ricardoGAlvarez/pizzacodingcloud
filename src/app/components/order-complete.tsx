@@ -12,43 +12,38 @@ import { useEffect, useState } from "react";
 import { orderList } from "../models/order-list";
 import { Card } from "@/components/ui/card";
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
 
 interface QuantityMap {
   [id: string]: number;
 }
 
-function Orderlist() {
+function OrderlistComplete() {
   const [orderList, setOrderList] = useState<orderList[]>([]);
   const [quantities] = useState<QuantityMap>({});
 
   useEffect(() => {
-    const listOrder = JSON.parse(
-      localStorage.getItem("listOrder") || "[]"
-    ) as orderList[];
-    setOrderList(listOrder);
+   const fetchOrderList = async () => {
+    try {
+      const response = await axios.get("/api/orders");
+      setOrderList(response.data.orders);
+    } catch (error) {
+      console.error("Error al obtener la lista de pedidos", error);
+    }
+   }
+    fetchOrderList();
   }, []);
+
+  console.log(orderList);
   const calculateTotal = () => {
     return orderList
       .reduce((total, item) => {
         const quantity = quantities[item.id] || 1;
-        return total + item.price ;
+        return total + item.price * (quantities[item.id] || 1);
       }, 0)
       .toFixed(2);
   };
 
-  const completarOrden = async () => {
-    const orderId = uuidv4(); // genera un ID único para la orden
-    const newOrder = orderList.map((item) => ({
-      orderId, // este es el campo clave
-      items: item.name,
-      estado: "Completado",
-      price: item.price,
-      quantity: quantities[item.id] || 1,
-    }));
-  
-    await axios.post("/api/orders", newOrder);
-  };
+
   return (
     <div className="flex justify-center flex-col items-center ">
       <Table>
@@ -69,24 +64,16 @@ function Orderlist() {
               <TableCell className="text-right">
                 ${(item.price * item.quantity).toFixed(2)}
               </TableCell>
-            </TableRow>
+              <TableCell className="text-right">
+              Total :${calculateTotal()}            
+              </TableCell>
+              </TableRow>
           ))}
         </TableBody>
       </Table>
-      <Card className="w-full flex">
-        <div className="0 flex justify-between items-center mx-auto gap-x-4">
-          <strong>Total :${calculateTotal()}</strong>
-          <Button
-            onClick={() => {
-              completarOrden();
-            }}
-          >
-            Completar
-          </Button>
-        </div>
-      </Card>
+
     </div>
   );
 }
 
-export default Orderlist;
+export default OrderlistComplete;
