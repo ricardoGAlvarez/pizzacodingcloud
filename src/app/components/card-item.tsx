@@ -1,12 +1,11 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Eye, ShoppingCartIcon } from "lucide-react";
+import {  ShoppingCartIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { items } from "../models/products";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import Link from "next/link";
 function CardItem() {
   const [items, setItems] = useState<items[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -59,14 +58,6 @@ function CardItem() {
                     >
                       <ShoppingCartIcon className="w-4 h-4 " />
                       Agregar
-                    </Button>
-                    <Button>
-                      <Link
-                        href={`/product/${item.id}`}
-                        className="flex items-center gap-x-2"
-                      >
-                        Ver  <Eye className="w-4 h-4" />
-                      </Link>
                     </Button>
                   </div>
                 </div>
