@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,16 +8,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-import { orderList } from "../models/order-list";
-import { Card } from "@/components/ui/card";
 import axios from "axios";
+import { orderComplete } from "../models/orderComplete";
 
 interface QuantityMap {
   [id: string]: number;
 }
 
 function OrderlistComplete() {
-  const [orderList, setOrderList] = useState<orderList[]>([]);
+  const [orderList, setOrderList] = useState<orderComplete[]>([]);
   const [quantities] = useState<QuantityMap>({});
 
   useEffect(() => {
@@ -33,16 +31,6 @@ function OrderlistComplete() {
     fetchOrderList();
   }, []);
 
-  console.log(orderList);
-  const calculateTotal = () => {
-    return orderList
-      .reduce((total, item) => {
-        const quantity = quantities[item.id] || 1;
-        return total + item.price * (quantities[item.id] || 1);
-      }, 0)
-      .toFixed(2);
-  };
-
 
   return (
     <div className="flex justify-center flex-col items-center ">
@@ -56,16 +44,20 @@ function OrderlistComplete() {
         </TableHeader>
         <TableBody>
           {orderList.map((item) => (
-            <TableRow key={item.id}>
+            <TableRow key={item.orderId}>
               <TableCell>
-                {item.name} X {item.quantity}
+                {
+                  item.items.map((item) => (
+                    <div key={item.id}>
+                      {item.name} - {item.quantity} x ${item.price.toFixed(2)}
+                    </div>
+                  ))
+                }
               </TableCell>
               <TableCell>{item.estado}</TableCell>
+
               <TableCell className="text-right">
-                ${(item.price * item.quantity).toFixed(2)}
-              </TableCell>
-              <TableCell className="text-right">
-              Total :${calculateTotal()}            
+              Total :${item.totalPedido.toFixed(2)}            
               </TableCell>
               </TableRow>
           ))}

@@ -9,46 +9,85 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-import { orderList } from "../models/order-list";
+import { orderList as OrderItem } from "../models/listOrders"; // Alias para evitar confusión con el nombre del componente
 import { Card } from "@/components/ui/card";
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
 
 interface QuantityMap {
   [id: string]: number;
 }
 
+interface UnifiedOrder {
+  orderId: number;
+  totalPedido: number;
+  items: {
+    id: number;
+    name: string;
+    price: number;
+    quantity: number;
+    // ... otras propiedades del item si las tienes
+  }[];
+  estado: "Completado";
+}
+
 function Orderlist() {
-  const [orderList, setOrderList] = useState<orderList[]>([]);
+  const [orderList, setOrderList] = useState<OrderItem[]>([]);
   const [quantities] = useState<QuantityMap>({});
 
   useEffect(() => {
     const listOrder = JSON.parse(
       localStorage.getItem("listOrder") || "[]"
-    ) as orderList[];
+    ) as OrderItem[];
     setOrderList(listOrder);
   }, []);
+
   const calculateTotal = () => {
     return orderList
       .reduce((total, item) => {
-        const quantity = quantities[item.id] || 1;
-        return total + item.price ;
+        const quantity = quantities[item.id] || item.quantity || 1; // Usa la cantidad del item si está disponible
+        return total + item.price * quantity;
       }, 0)
       .toFixed(2);
   };
 
   const completarOrden = async () => {
-    const orderId = uuidv4(); // genera un ID único para la orden
-    const newOrder = orderList.map((item) => ({
-      orderId, // este es el campo clave
-      items: item.name,
+    if (orderList.length === 0) {
+      console.log("No hay pedidos para completar.");
+      return;
+    }
+
+    const orderId = orderList.length + 1;
+    let totalPedido = 0;
+    const itemsUnificados = orderList.map((item) => {
+      const quantity = quantities[item.id] || item.quantity || 1;
+      totalPedido += item.price * quantity;
+      return {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: quantity,
+        // ... incluye aquí otras propiedades relevantes del item
+      };
+    });
+
+    const pedidoUnificado: UnifiedOrder = {
+      orderId: orderId,
+      totalPedido: parseFloat(totalPedido.toFixed(2)),
+      items: itemsUnificados,
       estado: "Completado",
-      price: item.price,
-      quantity: quantities[item.id] || 1,
-    }));
-  
-    await axios.post("/api/orders", newOrder);
+    };
+
+    localStorage.removeItem("listOrder");
+    window.location.reload(); 
+    try {
+      await axios.post("/api/orders", pedidoUnificado);
+      // Opcional: mostrar un mensaje de éxito al usuario
+    } catch (error) {
+      console.error("Error al enviar la orden:", error);
+      // Opcional: mostrar un mensaje de error al usuario
+    }
   };
+
   return (
     <div className="flex justify-center flex-col items-center ">
       <Table>
@@ -67,7 +106,7 @@ function Orderlist() {
               </TableCell>
               <TableCell>{item.estado}</TableCell>
               <TableCell className="text-right">
-                ${(item.price * item.quantity).toFixed(2)}
+                ${(item.price * (quantities[item.id] || item.quantity || 1)).toFixed(2)}
               </TableCell>
             </TableRow>
           ))}

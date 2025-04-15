@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import dataProduct from '@/utils/dataProducts.JSON';
 
+// Función para obtener un producto por su ID
 export async function GET(request) {
     const parts = request.url.split("/");
     const id = parts[parts.length - 1];

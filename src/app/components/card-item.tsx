@@ -3,21 +3,23 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Eye, ShoppingCartIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { items } from "../models/item";
+import { items } from "../models/products";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { FormProduct } from "./formProduct";
 import Link from "next/link";
 function CardItem() {
   const [items, setItems] = useState<items[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
+  //obtener los productos
   useEffect(() => {
     const response = axios.get("/api/product");
     response.then((res) => {
       setItems(res.data.product);
     });
   }, []);
+
+ //agregar al carrito
   const handleAddToCart = (item: items) => {
     const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
     const existingItem = cartItems.find(
@@ -34,10 +36,6 @@ function CardItem() {
     setTimeout(() => {
       window.location.reload();
     }, 1200);
-  };
-
-  const handleOpenModal = () => {
-    setIsOpen(!isOpen);
   };
 
   return (
@@ -81,15 +79,7 @@ function CardItem() {
           <h2 className="text-2xl font-semibold mb-2">
             No se encontro productos
           </h2>
-          <Button
-            onClick={() => {
-              handleOpenModal();
-            }}
-            className="bg-blue-700 flex items-center text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-blue-600 transition duration-200"
-          >
-            Agregar producto
-          </Button>
-          {isOpen && <FormProduct />}
+          
         </Card>
       )}
     </div>

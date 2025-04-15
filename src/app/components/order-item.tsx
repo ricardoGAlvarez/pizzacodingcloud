@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { orderItem } from "../models/item-order";
+import { orderItem } from "../models/orderProducts";
 
 
 interface QuantityMap {
@@ -52,8 +52,6 @@ function OrderItem() {
         const cartItems = JSON.parse(localStorage.getItem("cartItems") || "{}");
         delete cartItems[id];
         localStorage.setItem("cartItems", JSON.stringify(cartItems));
-        // Aquí NO necesitas recargar la página ni vaciar setItemsOrder completamente.
-        // La lista de itemsOrder se debería actualizar en otro lugar,
         // basándose en el nuevo estado de 'quantities'.
         return updatedQuantities;
       }
@@ -63,10 +61,6 @@ function OrderItem() {
       };
     });
   
-    // Adicionalmente, podrías necesitar actualizar tu 'itemsOrder'
-    // para reflejar la eliminación del item cuya cantidad llegó a 0.
-    // Esto dependerá de cómo se esté utilizando 'itemsOrder' y cómo se sincroniza con 'quantities'.
-    // Una posible forma (asumiendo que 'itemsOrder' es un array de objetos con un 'id'):
     setItemsOrder((prevItemsOrder) =>
       prevItemsOrder.filter((item) => quantities[item.id] > 0)
     );

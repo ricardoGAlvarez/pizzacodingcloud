@@ -1,5 +1,8 @@
 import dataProduct from "@/utils/dataProducts.JSON";
 import { NextResponse } from "next/server";
+
+
+// Función para obtener todos los productos
 export async function GET() {
   try {
     const product = dataProduct;
