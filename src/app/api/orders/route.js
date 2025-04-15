@@ -47,7 +47,6 @@ export async function POST(request) {
       estado,
     };
     orders.push(nuevaOrdenUnificada);
-
     // Respuesta exitosa
     return NextResponse.json(
       {

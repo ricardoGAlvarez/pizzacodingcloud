@@ -10,14 +10,13 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { orderComplete } from "../models/orderComplete";
+import { Eye } from "lucide-react";
+import Link from "next/link";
 
-interface QuantityMap {
-  [id: string]: number;
-}
+
 
 function OrderlistComplete() {
   const [orderList, setOrderList] = useState<orderComplete[]>([]);
-  const [quantities] = useState<QuantityMap>({});
 
   useEffect(() => {
    const fetchOrderList = async () => {
@@ -39,7 +38,8 @@ function OrderlistComplete() {
           <TableRow>
             <TableHead>Detalle</TableHead>
             <TableHead>Estado</TableHead>
-            <TableHead className="text-right">Total</TableHead>
+            <TableHead className="text-center">Total</TableHead>
+            <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -58,6 +58,9 @@ function OrderlistComplete() {
 
               <TableCell className="text-right">
               Total :${item.totalPedido.toFixed(2)}            
+              </TableCell>
+              <TableCell className="text-right">
+                <Link href={`/order/${item.orderId}`} className="cursor-pointer"><Eye /></Link>
               </TableCell>
               </TableRow>
           ))}

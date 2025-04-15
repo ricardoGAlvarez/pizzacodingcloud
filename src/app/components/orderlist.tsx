@@ -12,20 +12,20 @@ import { useEffect, useState } from "react";
 import { orderList as OrderItem } from "../models/listOrders"; // Alias para evitar confusión con el nombre del componente
 import { Card } from "@/components/ui/card";
 import axios from "axios";
-
+import { Check } from "lucide-react";
+import {v4 as uuidv4} from "uuid";
 interface QuantityMap {
   [id: string]: number;
 }
 
 interface UnifiedOrder {
-  orderId: number;
+  orderId: string;
   totalPedido: number;
   items: {
     id: number;
     name: string;
     price: number;
     quantity: number;
-    // ... otras propiedades del item si las tienes
   }[];
   estado: "Completado";
 }
@@ -56,7 +56,7 @@ function Orderlist() {
       return;
     }
 
-    const orderId = orderList.length + 1;
+    const orderId = uuidv4();
     let totalPedido = 0;
     const itemsUnificados = orderList.map((item) => {
       const quantity = quantities[item.id] || item.quantity || 1;
@@ -66,7 +66,6 @@ function Orderlist() {
         name: item.name,
         price: item.price,
         quantity: quantity,
-        // ... incluye aquí otras propiedades relevantes del item
       };
     });
 
@@ -77,14 +76,14 @@ function Orderlist() {
       estado: "Completado",
     };
 
-    localStorage.removeItem("listOrder");
-    window.location.reload(); 
+
     try {
       await axios.post("/api/orders", pedidoUnificado);
-      // Opcional: mostrar un mensaje de éxito al usuario
+      localStorage.setItem("listOrderComplete", JSON.stringify(pedidoUnificado));
+      localStorage.removeItem("listOrder");
+      window.location.reload(); 
     } catch (error) {
       console.error("Error al enviar la orden:", error);
-      // Opcional: mostrar un mensaje de error al usuario
     }
   };
 
@@ -113,14 +112,15 @@ function Orderlist() {
         </TableBody>
       </Table>
       <Card className="w-full flex">
-        <div className="0 flex justify-between items-center mx-auto gap-x-4">
+        <div className=" flex justify-between items-center mx-5 gap-x-4">
           <strong>Total :${calculateTotal()}</strong>
           <Button
             onClick={() => {
               completarOrden();
             }}
+            className="cursor-pointer bg-green-600 hover:bg-green-500"
           >
-            Completar
+            <Check size={20} />
           </Button>
         </div>
       </Card>
