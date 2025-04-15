@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 // Array para almacenar las órdenes en memoria
-export const orders = [];
+const orders = [];
 
 // Función para obtener todas las órdenes
 export async function GET() {
