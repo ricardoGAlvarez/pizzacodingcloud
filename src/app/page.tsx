@@ -3,6 +3,7 @@ import OrderItem from "./components/order-item";
 import Orderlist from "./components/orderlist";
 import Product from "./(pages)/product/page";
 import OrderlistComplete from "./components/order-complete";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -13,7 +14,8 @@ export default function Home() {
         <Orderlist />
       </Card>
       <Card className="flex flex-col p-4    m-4">
-        <h2 className="text-2xl font-bold">Ordenes Completas</h2>
+      <h2 className="text-2xl font-bold">Ordenes Completas</h2>
+        
         <OrderlistComplete />
       </Card>
       </div>
