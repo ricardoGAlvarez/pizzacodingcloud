@@ -3,7 +3,6 @@ import OrderItem from "./components/order-item";
 import Orderlist from "./components/orderlist";
 import Product from "./(pages)/product/page";
 import OrderlistComplete from "./components/order-complete";
-import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (

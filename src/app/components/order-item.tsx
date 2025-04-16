@@ -85,16 +85,25 @@ function OrderItem() {
       .toFixed(2);
   };
   const generarPedido = () => {
-    const pedido = itemsOrder.map((item) => ({
-      ...item,
-      quantity: quantities[item.id] || 1,
-      estado: "Pendiente", // Agregamos la propiedad estado a cada item del pedido
-    }));
-    localStorage.setItem("listOrder", JSON.stringify(pedido));
+    const pedido = {
+      id: Date.now(), // o algún ID UUID
+      items: itemsOrder.map((item) => ({
+        ...item,
+        quantity: quantities[item.id] || 1,
+      })),
+      estado: "Pendiente",
+      total: calculateTotal(),
+    };
+  
+    const pedidosAnteriores = JSON.parse(localStorage.getItem("listOrder") || "[]");
+    const nuevosPedidos = [...pedidosAnteriores, pedido];
+    localStorage.setItem("listOrder", JSON.stringify(nuevosPedidos));
+  
     localStorage.removeItem("cartItems");
     setItemsOrder([]);
     window.location.reload();
   };
+  
 
   return (
     <Card className="bg-white p-4 rounded-lg shadow-md ">

@@ -9,14 +9,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-import { orderList as OrderItem } from "../models/listOrders"; // Alias para evitar confusión con el nombre del componente
-import { Card } from "@/components/ui/card";
 import axios from "axios";
 import { Check } from "lucide-react";
-import {v4 as uuidv4} from "uuid";
-interface QuantityMap {
-  [id: string]: number;
-}
+import { v4 as uuidv4 } from "uuid";
+import { Pedido, Producto} from "../models/paraCompletar";
 
 interface UnifiedOrder {
   orderId: string;
@@ -31,62 +27,78 @@ interface UnifiedOrder {
 }
 
 function Orderlist() {
-  const [orderList, setOrderList] = useState<OrderItem[]>([]);
-  const [quantities] = useState<QuantityMap>({});
+  const [orderList, setOrderList] = useState<Pedido[]>([]);
 
   useEffect(() => {
     const listOrder = JSON.parse(
       localStorage.getItem("listOrder") || "[]"
-    ) as OrderItem[];
+    ) as Pedido[];
     setOrderList(listOrder);
   }, []);
 
-  const calculateTotal = () => {
-    return orderList
-      .reduce((total, item) => {
-        const quantity = quantities[item.id] || item.quantity || 1; // Usa la cantidad del item si está disponible
-        return total + item.price * quantity;
-      }, 0)
-      .toFixed(2);
-  };
-
-  const completarOrden = async () => {
-    if (orderList.length === 0) {
-      console.log("No hay pedidos para completar.");
+  const completarOrden = async (pedidoId: number, orderList: Pedido[]) => {
+    const pedidoSeleccionado = orderList.find((pedido) => pedido.id === pedidoId);
+  
+    if (!pedidoSeleccionado) {
+      console.log("Pedido no encontrado.");
       return;
     }
-
+  
     const orderId = uuidv4();
     let totalPedido = 0;
-    const itemsUnificados = orderList.map((item) => {
-      const quantity = quantities[item.id] || item.quantity || 1;
+  
+    const itemsUnificados: Producto[] = pedidoSeleccionado.items.map((item) => {
+      const quantity = item.quantity || 1;
       totalPedido += item.price * quantity;
       return {
         id: item.id,
         name: item.name,
         price: item.price,
         quantity: quantity,
+        ingredients: item.ingredients,
       };
     });
-
+  
     const pedidoUnificado: UnifiedOrder = {
       orderId: orderId,
       totalPedido: parseFloat(totalPedido.toFixed(2)),
       items: itemsUnificados,
       estado: "Completado",
     };
-
-
+  
+    console.log(pedidoUnificado);
     try {
       await axios.post("/api/orders", pedidoUnificado);
-      localStorage.setItem("listOrderComplete", JSON.stringify(pedidoUnificado));
-      localStorage.removeItem("listOrder");
-      window.location.reload(); 
+      localStorage.setItem(
+        "listOrderComplete",
+        JSON.stringify(pedidoUnificado)
+      );
+      eliminarPedidoPendiente(pedidoId, "listOrder"); 
+      window.location.reload();
     } catch (error) {
       console.error("Error al enviar la orden:", error);
     }
   };
-
+  
+  function eliminarPedidoPendiente(idAEliminar: number, claveOrdenesPendientes: string) {
+    const listaOrdenesString = localStorage.getItem(claveOrdenesPendientes);
+  
+    if (listaOrdenesString) {
+      try {
+        const listaOrdenes: Pedido[] = JSON.parse(listaOrdenesString);
+        const nuevaListaOrdenes = listaOrdenes.filter((pedido) => pedido.id !== idAEliminar);
+        localStorage.setItem(claveOrdenesPendientes, JSON.stringify(nuevaListaOrdenes));
+        console.log(`Pedido con ID ${idAEliminar} eliminado de ${claveOrdenesPendientes}`);
+        return true;
+      } catch (error) {
+        console.error("Error al parsear la lista de órdenes pendientes:", error);
+        return false;
+      }
+    } else {
+      console.log(`No se encontró la lista de órdenes pendientes con clave: ${claveOrdenesPendientes}`);
+      return false;
+    }
+  }
   return (
     <div className="flex justify-center flex-col items-center ">
       <Table>
@@ -98,32 +110,31 @@ function Orderlist() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {orderList.map((item) => (
-            <TableRow key={item.id}>
+          {orderList.map((pedido) => (
+            <TableRow key={pedido.id}>
               <TableCell>
-                {item.name} X {item.quantity}
+                {pedido.items.map((producto:any) => (
+                  <div key={producto.id}>
+                    {producto.name} x {producto.quantity}
+                  </div>
+                ))}
               </TableCell>
-              <TableCell>{item.estado}</TableCell>
+              <TableCell>{pedido.estado}</TableCell>
+              <TableCell className="text-right">${pedido.total}</TableCell>
               <TableCell className="text-right">
-                ${(item.price * (quantities[item.id] || item.quantity || 1)).toFixed(2)}
+              <Button
+            onClick={() => {
+              completarOrden(pedido.id as number, orderList);
+            }}
+            className="cursor-pointer bg-green-600 hover:bg-green-500 w-10 h-6"
+          >
+            <Check size={16} />
+          </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <Card className="w-full flex">
-        <div className=" flex justify-between items-center mx-5 gap-x-4">
-          <strong>Total :${calculateTotal()}</strong>
-          <Button
-            onClick={() => {
-              completarOrden();
-            }}
-            className="cursor-pointer bg-green-600 hover:bg-green-500"
-          >
-            <Check size={20} />
-          </Button>
-        </div>
-      </Card>
     </div>
   );
 }

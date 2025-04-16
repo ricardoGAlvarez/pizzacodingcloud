@@ -16,7 +16,6 @@ export async function GET() {
 export async function POST(request) {
   try {
     const data = await request.json();
-
     // Validamos que el cuerpo de la solicitud tenga la estructura correcta
     if (
       typeof data !== "object" ||
@@ -32,14 +31,11 @@ export async function POST(request) {
         { status: 400 }
       );
     }
-
     // Extraemos las propiedades de la orden
     const { orderId, totalPedido, items, estado } =
       data;
-
     // Guardamos la nueva orden
     // En este ejemplo, simplemente la agregamos al array 'orders' en memoria
-
     const nuevaOrdenUnificada = {
       orderId,
       totalPedido,
@@ -59,4 +55,9 @@ export async function POST(request) {
     // Respuesta de error
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+}
+
+export async function DELETE() {
+ orders.splice(0, orders.length);
+  return NextResponse.json({ message: "Todas las órdenes han sido eliminadas." }, { status: 200 });
 }
