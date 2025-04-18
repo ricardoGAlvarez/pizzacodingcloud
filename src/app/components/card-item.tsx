@@ -31,7 +31,7 @@ function CardItem() {
       cartItems.push({ ...item, quantity: 1 });
     }
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
-    toast.success("Item added to cart");
+    toast.success("Se agrego producto al carrito");
     setTimeout(() => {
       window.location.reload();
     }, 1200);
