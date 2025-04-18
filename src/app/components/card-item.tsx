@@ -8,7 +8,6 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 function CardItem() {
   const [items, setItems] = useState<items[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
 
   //obtener los productos
   useEffect(() => {

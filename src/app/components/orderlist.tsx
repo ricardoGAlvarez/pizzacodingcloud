@@ -66,7 +66,6 @@ function Orderlist() {
       estado: "Completado",
     };
   
-    console.log(pedidoUnificado);
     try {
       await axios.post("/api/orders", pedidoUnificado);
       localStorage.setItem(
@@ -88,7 +87,6 @@ function Orderlist() {
         const listaOrdenes: Pedido[] = JSON.parse(listaOrdenesString);
         const nuevaListaOrdenes = listaOrdenes.filter((pedido) => pedido.id !== idAEliminar);
         localStorage.setItem(claveOrdenesPendientes, JSON.stringify(nuevaListaOrdenes));
-        console.log(`Pedido con ID ${idAEliminar} eliminado de ${claveOrdenesPendientes}`);
         return true;
       } catch (error) {
         console.error("Error al parsear la lista de órdenes pendientes:", error);

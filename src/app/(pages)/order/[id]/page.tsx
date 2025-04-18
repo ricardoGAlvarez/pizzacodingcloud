@@ -35,7 +35,7 @@ function OrderDetail() {
         const encontrada = data.find((o: Orden) => o.orderId === id);
         setOrden(encontrada || null);
       } else {
-        // Si es solo una orden (como tu ejemplo anterior), comparamos directo
+        // Si es solo una orden , comparamos directo
         if (data.orderId === id) {
           setOrden(data);
         }
